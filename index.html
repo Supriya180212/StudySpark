@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySpark — Student Dashboard</title>
+<style>
+:root{
+  --ink:#202044; --muted:#74748d; --bg:#f7f6ff; --card:#fff;
+  --purple:#7864df; --purple2:#eeeaff; --line:#e9e7f3;
+  --pink:#ffe8ef; --blue:#e7f2ff; --mint:#e4f8ef; --yellow:#fff3d9;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
+button,input{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:fixed;inset:0 auto 0 0}
+.brand{font-weight:800;font-size:20px;display:flex;gap:8px;align-items:center;padding:0 10px 25px}
+.star{color:#f4b92f}.tagline{font-size:9px;color:var(--muted);font-weight:500}
+.nav{display:grid;gap:5px}.nav button{border:0;background:none;text-align:left;padding:11px 13px;border-radius:10px;color:#4e4e68;cursor:pointer;font-size:14px}
+.nav button:hover,.nav button.active{background:var(--purple2);color:#5c4bd0;font-weight:650}
+.nav .icon{display:inline-block;width:24px}
+.bottom{position:absolute;bottom:20px;left:14px;right:14px}
+.main{margin-left:230px;padding:28px;max-width:1500px;width:calc(100% - 230px)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:4px}
+h1{margin:0;font-size:30px;letter-spacing:-.7px} h2{margin:0 0 5px;font-size:20px} p{margin:0;color:var(--muted)}
+.user{background:#fff;border:1px solid var(--line);border-radius:22px;padding:8px 13px;display:flex;align-items:center;gap:8px}
+.avatar{width:28px;height:28px;border-radius:50%;background:#ddd6ff;display:grid;place-items:center;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 3px 12px rgba(60,45,120,.035)}
+.hero{grid-column:span 12;background:linear-gradient(110deg,#fff,#f4f1ff);display:flex;justify-content:space-between;align-items:center;min-height:170px}
+.hero h1{font-size:34px}.hero p{margin-top:8px}.doodle{font-size:65px;padding:20px 35px}
+.feature{grid-column:span 2;min-height:145px;cursor:pointer;transition:.18s}
+.feature:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(60,45,120,.08)}
+.feature .ico{font-size:28px;margin-bottom:13px}.feature h3{margin:0 0 5px;font-size:16px}.feature p{font-size:12px}.arrow{float:right;margin-top:15px;color:#6a59d8}
+.pink{background:var(--pink)}.blue{background:var(--blue)}.mint{background:var(--mint)}.yellow{background:var(--yellow)}
+.two{grid-column:span 5}.three{grid-column:span 7}
+.list{display:grid;gap:10px;margin-top:15px}.row{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:11px;font-size:13px}
+.badge{padding:4px 8px;border-radius:10px;font-size:11px;background:#f0edff;color:#6353ca}
+.check{display:flex;gap:10px;align-items:center;font-size:13px}.check input{accent-color:var(--purple)}
+.timer{text-align:center}.circle{width:125px;height:125px;border-radius:50%;margin:12px auto;border:9px solid #dcd6ff;border-top-color:var(--purple);display:grid;place-items:center;font-size:27px;font-weight:750}
+.btn{border:0;border-radius:10px;background:var(--purple);color:#fff;padding:10px 18px;cursor:pointer;font-weight:650}.btn.secondary{background:#f0edff;color:#5f50c9}
+.progressbar{height:9px;background:#eeeef6;border-radius:10px;overflow:hidden;margin-top:14px}.progressbar span{display:block;height:100%;background:var(--purple);border-radius:10px}
+.page{display:none}.page.active{display:block}
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
+.subject{padding:22px;border:1px solid var(--line);border-radius:16px;cursor:pointer}.subject h3{margin:10px 0 4px}.subject p{font-size:12px}
+.search{width:100%;border:1px solid var(--line);padding:13px 15px;border-radius:12px;outline:none;margin-top:15px}.search:focus{border-color:#b9b0f2}
+table{width:100%;border-collapse:collapse;margin-top:15px;font-size:12px}.tablewrap{overflow:auto}
+th,td{border:1px solid var(--line);padding:10px;text-align:center}th{background:#faf9ff}
+.notice{padding:12px;border-radius:12px;background:#fff8e8;margin-top:14px;font-size:12px}
+@media(max-width:900px){.sidebar{width:72px;padding:18px 8px}.brand{justify-content:center}.brand .name,.tagline,.nav button span:last-child,.bottom span{display:none}.nav button{text-align:center}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.feature{grid-column:span 4}.two,.three{grid-column:span 12}.subjects{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.hero{display:block}.doodle{display:none}.feature{grid-column:span 6}.subjects{grid-template-columns:1fr}.top h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span class="star">★</span><span class="name">StudySpark</span></div>
+  <div class="tagline" style="padding:0 10px 16px">Study smarter. Score higher.</div>
+  <nav class="nav">
+    <button class="active" data-page="home"><span class="icon">⌂</span><span>Home</span></button>
+    <button data-page="learn"><span class="icon">▤</span><span>Learn</span></button>
+    <button data-page="practice"><span class="icon">✓</span><span>Practice</span></button>
+    <button data-page="focus"><span class="icon">◷</span><span>Focus</span></button>
+    <button data-page="plan"><span class="icon">□</span><span>Plan</span></button>
+    <button data-page="progress"><span class="icon">▥</span><span>Progress</span></button>
+    <button data-page="revise"><span class="icon">↻</span><span>Revise</span></button>
+  </nav>
+  <div class="bottom nav">
+    <button><span class="icon">⚙</span><span>Settings</span></button>
+    <button onclick="alert('See you next time!')"><span class="icon">↪</span><span>Log out</span></button>
+  </div>
+</aside>
+
+<main class="main">
+<div class="top"><div><div class="crumb" id="crumb">Home</div><h1 id="title">Study Dashboard</h1></div><div class="user"><div class="avatar">S</div>Hi, Student⌄</div></div>
+
+<section id="home" class="page active">
+<div class="grid">
+  <div class="card hero"><div><h1>Study smarter.<br>Track better.<br>Score higher. ✨</h1><p>Your personal space for studying, revision and exam preparation.</p></div><div class="doodle">📚<br>✏️</div></div>
+  <div class="card feature pink" data-page="learn"><div class="ico">📖</div><h3>Learn</h3><p>Notes, concepts & important topics</p><div class="arrow">→</div></div>
+  <div class="card feature blue" data-page="practice"><div class="ico">📝</div><h3>Practice</h3><p>Questions, quizzes & mock tests</p><div class="arrow">→</div></div>
+  <div class="card feature yellow" data-page="focus"><div class="ico">⏱️</div><h3>Focus</h3><p>Study timer & focus mode</p><div class="arrow">→</div></div>
+  <div class="card feature mint" data-page="plan"><div class="ico">📅</div><h3>Plan</h3><p>Timetable, goals & deadlines</p><div class="arrow">→</div></div>
+  <div class="card feature blue" data-page="progress"><div class="ico">📊</div><h3>Progress</h3><p>Track performance & improvement</p><div class="arrow">→</div></div>
+  <div class="card feature pink" data-page="revise"><div class="ico">🔄</div><h3>Revise</h3><p>Smart revision plans & quick recap</p><div class="arrow">→</div></div>
+
+  <div class="card two"><h2>Today's Goals</h2><p>Small steps add up.</p><div class="list" id="goals">
+    <label class="check"><input type="checkbox" checked> Complete Science — Light</label>
+    <label class="check"><input type="checkbox"> Solve 20 Maths questions</label>
+    <label class="check"><input type="checkbox"> Revise History Chapter 1</label>
+    <label class="check"><input type="checkbox"> Read 10 pages of English</label>
+  </div></div>
+  <div class="card two timer"><h2>Study Timer</h2><p>Stay focused. Beat distractions!</p><div class="circle" id="timer">25:00</div><button class="btn" id="timerBtn" onclick="toggleTimer()">Start</button></div>
+  <div class="card three"><h2>Upcoming Exams</h2><p>Keep the important dates in sight.</p><div class="list">
+    <div class="row"><span>Science Unit Test</span><span class="badge">6 days</span></div>
+    <div class="row"><span>Maths Pre-Board</span><span class="badge">13 days</span></div>
+    <div class="row"><span>Social Science Test</span><span class="badge">21 days</span></div>
+  </div></div>
+</div>
+</section>
+
+<section id="learn" class="page">
+<div class="card"><h2>Subject Notes</h2><p>Choose a subject and explore notes, formulas and important topics.</p><input class="search" placeholder="🔎  Search for a subject or chapter..." oninput="filterSubjects(this.value)">
+<div class="subjects" id="subjects">
+  <div class="subject pink"><div>🧪</div><h3>Science</h3><p>Light · Electricity · Chemistry</p></div>
+  <div class="subject blue"><div>🧮</div><h3>Mathematics</h3><p>Formulas · Examples · Practice</p></div>
+  <div class="subject mint"><div>🌍</div><h3>Social Science</h3><p>History · Geography · Civics</p></div>
+  <div class="subject yellow"><div>📖</div><h3>English</h3><p>Literature · Grammar · Writing</p></div>
+  <div class="subject pink"><div>अ</div><h3>Hindi</h3><p>Literature · Grammar</p></div>
+  <div class="subject blue"><div>💻</div><h3>Computer / AI</h3><p>Coding · Basics · Projects</p></div>
+</div></div></section>
+
+<section id="practice" class="page"><div class="card"><h2>Practice & Mock Tests</h2><p>Practice a little every day.</p><div class="list">
+<div class="row"><span>🧪 Science — Full Syllabus <small>60 questions · 60 min</small></span><button class="btn" onclick="startTest('Science')">Start Test</button></div>
+<div class="row"><span>🧮 Mathematics — Chapter Test <small>40 questions · 45 min</small></span><button class="btn" onclick="startTest('Mathematics')">Start Test</button></div>
+<div class="row"><span>🌍 Social Science — PYQs <small>60 questions · 75 min</small></span><button class="btn" onclick="startTest('Social Science')">Start Test</button></div>
+</div><div class="notice">💡 Tip: Try a timed test once you've revised the chapter.</div></div></section>
+
+<section id="focus" class="page"><div class="card timer"><h2>Focus Timer</h2><p>Put your phone aside and give yourself 25 minutes.</p><div class="circle" id="timer2">25:00</div><button class="btn" onclick="resetTimer()">Reset</button> <button class="btn" onclick="toggleTimer()">Start / Pause</button></div></section>
+
+<section id="plan" class="page"><div class="card"><h2>My Study Timetable</h2><p>Plan your week, stay ahead.</p><div class="tablewrap"><table><tr><th>Time</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
+<tr><td>6–7 PM</td><td>Science</td><td>Maths</td><td>English</td><td>Science</td><td>SST</td></tr>
+<tr><td>7–8 PM</td><td>Maths</td><td>Science</td><td>Maths</td><td>Hindi</td><td>Science</td></tr>
+<tr><td>8–9 PM</td><td>Homework</td><td>Revision</td><td>Homework</td><td>Revision</td><td>Mock Test</td></tr>
+<tr><td>9–9:30 PM</td><td>Break</td><td>Break</td><td>Break</td><td>Break</td><td>Break</td></tr></table></div></div></section>
+
+<section id="progress" class="page"><div class="grid"><div class="card two"><h2>Your Progress</h2><p>Keep improving one chapter at a time.</p><div style="font-size:50px;font-weight:800;margin:25px 0 5px">78%</div><p>Overall progress</p><div class="progressbar"><span style="width:78%"></span></div></div><div class="card three"><h2>This Month</h2><div class="list"><div class="row">Chapters completed <b>17 / 25</b></div><div class="row">Tests attempted <b>8 / 12</b></div><div class="row">Average score <b>86%</b></div><div class="row">Study streak <b>12 days 🔥</b></div></div></div></div></section>
+
+<section id="revise" class="page"><div class="card"><h2>Revision Planner</h2><p>Smart revision. Better results.</p><div class="list">
+<div class="row"><span>🔴 <b>High:</b> Light — Science</span><span class="badge">Due in 2 days</span></div>
+<div class="row"><span>🟡 <b>Medium:</b> Electricity — Science</span><span class="badge">Due in 5 days</span></div>
+<div class="row"><span>🟢 <b>Low:</b> Trigonometry — Maths</span><span class="badge">Due in 10 days</span></div>
+</div><div class="notice">✨ Revision rule: review difficult topics first, then test yourself without looking at notes.</div></div></section>
+</main>
+</div>
+<script>
+const pages=document.querySelectorAll('.page');
+const nav=document.querySelectorAll('.nav button[data-page]');
+const title=document.getElementById('title'), crumb=document.getElementById('crumb');
+const names={home:['Study Dashboard','Home'],learn:['Subject Notes','Learn'],practice:['Practice & Mock Tests','Practice'],focus:['Focus Timer','Focus'],plan:['My Study Timetable','Plan'],progress:['Your Progress','Progress'],revise:['Revision Planner','Revise']};
+function showPage(id){
+ pages.forEach(p=>p.classList.toggle('active',p.id===id));
+ nav.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ document.querySelectorAll('.feature[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+ title.textContent=names[id][0]; crumb.textContent=names[id][1];
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+nav.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('.feature[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+let seconds=25*60, running=false, interval=null;
+function renderTimer(){let m=Math.floor(seconds/60),s=seconds%60;let t=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('timer').textContent=t;document.getElementById('timer2').textContent=t}
+function toggleTimer(){running=!running;if(running){interval=setInterval(()=>{if(seconds>0){seconds--;renderTimer()}else{running=false;clearInterval(interval);alert('Focus session complete! 🎉')}} ,1000)}else clearInterval(interval)}
+function resetTimer(){running=false;clearInterval(interval);seconds=25*60;renderTimer()}
+function filterSubjects(v){document.querySelectorAll('.subject').forEach(s=>s.style.display=s.textContent.toLowerCase().includes(v.toLowerCase())?'block':'none')}
+function startTest(subject){alert(`Starting ${subject} practice test!`)}
+renderTimer();
+</script>
+</body>
+</html>
