@@ -34,11 +34,14 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # --------------------------------------------------------------------------
 # Supabase
 # --------------------------------------------------------------------------
-def _env(name):
-    value = os.environ.get(name)
-    if not value:
-        raise RuntimeError(f"Missing environment variable: {name}")
-    return value
+def _env(*names):
+    """Return the first environment variable that is set (Supabase renamed its keys,
+    so both the old and the new names are accepted)."""
+    for name in names:
+        value = os.environ.get(name)
+        if value:
+            return value.strip()
+    raise RuntimeError(f"Missing environment variable: {names[0]}")
 
 
 _db = None
@@ -49,13 +52,13 @@ def db():
     Every query below is filtered by the logged-in user's id."""
     global _db
     if _db is None:
-        _db = create_client(_env("SUPABASE_URL"), _env("SUPABASE_SERVICE_KEY"))
+        _db = create_client(_env("SUPABASE_URL"), _env("SUPABASE_SERVICE_KEY", "SUPABASE_SECRET_KEY"))
     return _db
 
 
 def auth_client():
     """Fresh anon client per auth call so sessions never leak between users."""
-    return create_client(_env("SUPABASE_URL"), _env("SUPABASE_ANON_KEY"))
+    return create_client(_env("SUPABASE_URL"), _env("SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEY"))
 
 
 # --------------------------------------------------------------------------
@@ -156,6 +159,10 @@ def _auth_error(exc, action="log in"):
         return "That password is too weak. Try a longer one."
     if any(w in text for w in ("connect", "name or service", "getaddrinfo", "timed out", "resolve")):
         return "Couldn't reach Supabase. Check SUPABASE_URL in your .env file and your internet connection."
+    if "missing environment variable" in text:
+        return "The server is missing its Supabase settings. Add SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_KEY in your hosting environment variables (or .env file) and restart."
+    if not os.environ.get("RENDER"):  # local dev only: show the raw error to help debugging
+        return f"Couldn't {action}. Details: {type(exc).__name__}: {exc}"
     return f"Couldn't {action}. Please try again."
 
 
