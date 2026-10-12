@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block content %}
+<section class="auth-card card reveal center">
+  <h1>{{ message or "Page not found" }}</h1>
+  <p class="muted">{% if message %}Please try again in a moment.{% else %}That page doesn’t exist.{% endif %}</p>
+  <a class="btn primary" href="{{ url_for('index') }}">Back to home</a>
+</section>
+{% endblock %}

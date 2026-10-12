@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Practice{% endblock %}
+{% block content %}
+<section class="head reveal">
+  <div>
+    <p class="eyebrow">Quick recall</p>
+    <h1>Practice corner</h1>
+    <p class="muted">Answer, read the explanation, move on. Finished sets are saved.</p>
+  </div>
+  <select id="quizSubject" class="field auto" aria-label="Quiz subject">
+    <option value="all">All subjects</option>
+    {% for s in subjects %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+  </select>
+</section>
+
+<section class="card reveal" id="quiz">
+  <div class="row between">
+    <span class="pill" id="quizCounter">Question 1</span>
+    <span class="tiny" id="quizScore">Score: 0</span>
+  </div>
+  <p class="question" id="quizQuestion"></p>
+  <div class="answers" id="quizAnswers"></div>
+  <p class="feedback" id="quizFeedback" aria-live="polite"></p>
+  <div class="row">
+    <button class="btn primary" id="checkQuiz" type="button">Check answer</button>
+    <button class="btn" id="nextQuiz" type="button">Next →</button>
+  </div>
+</section>
+
+<p class="note reveal">These are starter questions to warm up. Practise full board-style questions from your books too.</p>
+<script id="quiz-data" type="application/json">{{ quizzes|tojson }}</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Study smarter, one topic at a time{% endblock %}
+{% block body_class %}landing{% endblock %}
+{% block content %}
+<header class="pub-top">
+  <a class="brand" href="{{ url_for('index') }}"><span class="mark">⚡</span>StudySpark</a>
+  <nav class="row">
+    <a class="nav-link" href="#features">Features</a>
+    <a class="nav-link" href="#how">How it works</a>
+    {% if session.user %}
+      <a class="btn primary small" href="{{ url_for('dashboard') }}">Go to dashboard</a>
+    {% else %}
+      <a class="btn small" href="{{ url_for('login') }}">Log in</a>
+      <a class="btn primary small" href="{{ url_for('register') }}">Sign up</a>
+    {% endif %}
+  </nav>
+</header>
+
+<section class="land-hero reveal">
+  <p class="eyebrow">Class 10 · CBSE</p>
+  <h1>Study smarter, one topic at a time.</h1>
+  <p class="lead">StudySpark is a simple study space for Class 10 students. Track your syllabus, practise quick questions and plan your study days, all in one calm place.</p>
+  <div class="row center">
+    {% if session.user %}
+      <a class="btn primary" href="{{ url_for('dashboard') }}">Open my dashboard →</a>
+    {% else %}
+      <a class="btn primary" href="{{ url_for('register') }}">Get started, it’s free</a>
+      <a class="btn" href="{{ url_for('login') }}">I already have an account</a>
+    {% endif %}
+  </div>
+  <p class="tiny">Maths · Science · Social Science · English · Hindi · AI</p>
+</section>
+
+<section id="features" class="land-section">
+  <div class="sec-head reveal">
+    <h2>Everything you need, nothing you don’t</h2>
+    <p class="muted">Four tools that cover the daily routine of exam preparation.</p>
+  </div>
+  <div class="feat-grid">
+    <article class="card feat reveal">
+      <span class="ico">✅</span>
+      <h3>Syllabus checklist</h3>
+      <p class="muted">Every subject broken into chapters. Tick off what you’ve revised and watch your progress bar grow.</p>
+    </article>
+    <article class="card feat reveal">
+      <span class="ico">🧠</span>
+      <h3>Practice quizzes</h3>
+      <p class="muted">Short questions with instant explanations to warm up your recall, and scores saved to your account.</p>
+    </article>
+    <article class="card feat reveal">
+      <span class="ico">🗓️</span>
+      <h3>Study planner</h3>
+      <p class="muted">Add tasks by subject and date so you always know what to study next.</p>
+    </article>
+    <article class="card feat reveal">
+      <span class="ico">🗺️</span>
+      <h3>Map-work tracker</h3>
+      <p class="muted">A checklist of soils, dams, mines, ports and more to practise on your outline map.</p>
+    </article>
+  </div>
+</section>
+
+<section id="how" class="land-section">
+  <div class="sec-head reveal">
+    <h2>How it works</h2>
+    <p class="muted">Up and running in under a minute.</p>
+  </div>
+  <ol class="steps">
+    <li class="card reveal"><span class="num">1</span><div><h3>Create a free account</h3><p class="muted">Just your name, email and a password.</p></div></li>
+    <li class="card reveal"><span class="num">2</span><div><h3>Pick a subject</h3><p class="muted">Open its checklist and tick topics as you finish revising them.</p></div></li>
+    <li class="card reveal"><span class="num">3</span><div><h3>Practise and plan</h3><p class="muted">Take a quick quiz, use the focus timer and line up tomorrow’s tasks.</p></div></li>
+  </ol>
+</section>
+
+<section class="cta card reveal">
+  <h2>Ready to make studying simpler?</h2>
+  <p class="muted">Your progress is saved, so you can pick up from any device.</p>
+  {% if session.user %}
+    <a class="btn primary" href="{{ url_for('dashboard') }}">Open my dashboard →</a>
+  {% else %}
+    <a class="btn primary" href="{{ url_for('register') }}">Create my account</a>
+  {% endif %}
+</section>
+
+<footer class="footer">StudySpark · Made for Class 10, one chapter at a time</footer>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Map work{% endblock %}
+{% block content %}
+<section class="head reveal">
+  <div>
+    <p class="eyebrow">Geography practice</p>
+    <h1>Map-work checklist</h1>
+    <p class="muted">Use this list while practising on a blank outline map of India.</p>
+  </div>
+  <span class="pill" id="mapCount">0 completed</span>
+</section>
+
+<div class="card reveal" id="maps">
+  {% for g in groups %}
+  <h3>{{ g.name }}</h3>
+  <div class="maplist">
+    {% for it in g["items"] %}
+    <label class="mapitem">
+      <input type="checkbox" class="js-progress" data-key="{{ it.key }}" {% if it.key in done %}checked{% endif %}>
+      <span>{{ it.title }}</span>
+    </label>
+    {% endfor %}
+  </div>
+  {% if not loop.last %}<hr>{% endif %}
+  {% endfor %}
+</div>
+
+<p class="note reveal">This is a checklist only. It doesn’t replace practising the correct locations on an actual map.</p>
+{% endblock %}

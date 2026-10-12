@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Syllabus{% endblock %}
+{% block content %}
+<section class="head reveal">
+  <div>
+    <p class="eyebrow">Your checklist</p>
+    <h1>Subject-wise syllabus</h1>
+    <p class="muted">Tick a topic once you’ve revised it. Progress is saved to your account.</p>
+  </div>
+  <span class="pill ok" id="overallPill">{{ percent }}% complete</span>
+</section>
+
+<div class="toolbar reveal">
+  <input id="search" type="search" class="field" placeholder="Search topics…" aria-label="Search syllabus">
+  <select id="status" class="field" aria-label="Filter topics">
+    <option value="all">All topics</option>
+    <option value="todo">Not completed</option>
+    <option value="done">Completed</option>
+  </select>
+</div>
+
+<div class="layout">
+  <aside class="card side reveal">
+    <nav class="tabs" id="subjectTabs">
+      {% for s in subjects %}
+      <button type="button" class="tab{% if loop.first %} active{% endif %}" data-subject="{{ s.name }}">{{ s.icon }} {{ s.name }}</button>
+      {% endfor %}
+    </nav>
+    <hr>
+    <p class="tiny">Overall progress</p>
+    <div class="bar"><span id="overallBar" style="width: {{ percent }}%"></span></div>
+    <p class="tiny" id="overallText">{{ done_count }} of {{ total }} topics done</p>
+  </aside>
+
+  <div class="card reveal">
+    {% for s in subjects %}
+    <div class="panel" data-panel="{{ s.name }}" {% if not loop.first %}hidden{% endif %}>
+      <h2>{{ s.icon }} {{ s.name }}</h2>
+      {% for g in s.groups %}
+      <div class="group">
+        <h3>{{ g.name }}</h3>
+        {% for it in g.topics %}
+        <label class="item">
+          <input type="checkbox" class="js-progress" data-key="{{ it.key }}" {% if it.key in done %}checked{% endif %}>
+          <span class="item-main">
+            <span class="item-title">{{ it.title }}</span>
+            {% if it.desc %}<span class="item-desc">{{ it.desc }}</span>{% endif %}
+          </span>
+          <span class="pill {{ 'ok' if it.key in done }}">{{ 'Done' if it.key in done else 'To do' }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <p class="none muted" hidden>No topics match your search.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<p class="note reveal">Chapter lists follow the details you provided. Check your school’s latest official syllabus, especially for Social Science, before treating them as final.</p>
+{% endblock %}

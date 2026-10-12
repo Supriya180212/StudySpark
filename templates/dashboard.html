@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero card reveal">
+  <p class="eyebrow">Class 10 study space</p>
+  <h1>Hi {{ session.user.name }}, let’s make studying simpler.</h1>
+  <p class="muted">One topic at a time. Track your syllabus, practise questions, and plan your study day.</p>
+  <div class="row">
+    <a class="btn primary" href="{{ url_for('syllabus') }}">Open my syllabus →</a>
+    <a class="btn" href="{{ url_for('practice') }}">Quick quiz</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>{{ stats|length }}</b><span>Subjects</span></div>
+    <div class="stat"><b>{{ done_count }}</b><span>Topics completed</span></div>
+    <div class="stat"><b>{{ percent }}%</b><span>Syllabus progress</span></div>
+  </div>
+</section>
+
+<div class="head reveal">
+  <div><h2>Your subjects</h2><p class="muted">Tap a subject to open its checklist.</p></div>
+  <span class="pill">CBSE · Class 10</span>
+</div>
+<div class="grid">
+  {% for s in stats %}
+  <a class="card subject reveal" href="{{ url_for('syllabus') }}#{{ s.name|urlencode }}" style="--accent: {{ s.accent }}">
+    <h3>{{ s.name }}</h3>
+    <div class="bar"><span style="width: {{ s.pct }}%"></span></div>
+    <p class="tiny">{{ s.done }} / {{ s.total }} topics done</p>
+  </a>
+  {% endfor %}
+</div>
+
+<div class="two">
+  <section class="card reveal">
+    <div class="head tight">
+      <div><h2>Today’s checklist</h2><p class="muted">Resets each day.</p></div>
+      <button class="btn small" id="resetTasks" type="button">Reset</button>
+    </div>
+    <div class="tasklist" id="dailyTasks">
+      <label class="task"><input type="checkbox" data-task="revise"><span>Revise one difficult topic</span></label>
+      <label class="task"><input type="checkbox" data-task="practice"><span>Practise 10 board-style questions</span></label>
+      <label class="task"><input type="checkbox" data-task="recall"><span>Close the book and recall key points</span></label>
+      <label class="task"><input type="checkbox" data-task="tomorrow"><span>Plan tomorrow’s first study task</span></label>
+    </div>
+    {% if upcoming %}
+    <hr>
+    <h3>Coming up in your planner</h3>
+    <ul class="plain">
+      {% for p in upcoming %}
+      <li><b>{{ p.task }}</b> <span class="tiny">· {{ p.subject }}{% if p.due_date %} · {{ p.due_date }}{% endif %}</span></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  <section class="card timer reveal" id="timer">
+    <h2>Focus timer</h2>
+    <p class="tiny">25 minutes of focus, then a short break</p>
+    <div class="time" id="timerDisplay">25:00</div>
+    <div class="row center">
+      <button class="btn primary" id="timerToggle" type="button">Start</button>
+      <button class="btn" id="timerReset" type="button">Reset</button>
+    </div>
+    <p class="tiny" id="timerMessage" aria-live="polite">One task at a time. You’ve got this.</p>
+  </section>
+</div>
+{% endblock %}

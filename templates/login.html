@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block content %}
+<section class="auth-card card reveal">
+  <a class="brand center" href="{{ url_for('index') }}"><span class="mark">⚡</span>StudySpark</a>
+  <h1>Welcome back</h1>
+  <p class="muted">Log in to pick up where you left off.</p>
+  <form method="post" class="form" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" class="field" autocomplete="email" required autofocus>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" class="field" autocomplete="current-password" required>
+    <button class="btn primary block" type="submit">Log in</button>
+  </form>
+  <p class="tiny center">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+</section>
+{% endblock %}

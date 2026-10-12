@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} · StudySpark</title>
+  <meta name="description" content="A simple Class 10 study space: syllabus checklist, practice quizzes and a study planner.">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% if session.user %}
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="mark">⚡</span>StudySpark</a>
+    <nav class="nav" aria-label="Main">
+      {% set ep = request.endpoint %}
+      <a href="{{ url_for('dashboard') }}" class="{{ 'active' if ep == 'dashboard' }}">Home</a>
+      <a href="{{ url_for('syllabus') }}" class="{{ 'active' if ep == 'syllabus' }}">Syllabus</a>
+      <a href="{{ url_for('practice') }}" class="{{ 'active' if ep == 'practice' }}">Practice</a>
+      <a href="{{ url_for('planner') }}" class="{{ 'active' if ep == 'planner' }}">Planner</a>
+      <a href="{{ url_for('maps') }}" class="{{ 'active' if ep == 'maps' }}">Map work</a>
+    </nav>
+    <form method="post" action="{{ url_for('logout') }}" class="logout">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <span class="tiny hide-sm">{{ session.user.name }}</span>
+      <button class="btn small" type="submit">Log out</button>
+    </form>
+  </div>
+</header>
+{% endif %}
+
+<main class="wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}" role="status">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+{% if session.user %}<footer class="footer">StudySpark · one chapter at a time</footer>{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

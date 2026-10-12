@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Planner{% endblock %}
+{% block content %}
+<section class="head reveal">
+  <div>
+    <p class="eyebrow">Plan it, then do it</p>
+    <h1>Study planner</h1>
+    <p class="muted">Add a task and a subject. Your plan is saved to your account.</p>
+  </div>
+</section>
+
+<div class="two even">
+  <form class="card form reveal" id="planForm" novalidate>
+    <h3>Add a study task</h3>
+    <label for="planTask">Task</label>
+    <input id="planTask" class="field" maxlength="200" placeholder="e.g. Revise electricity numericals" required>
+    <label for="planSubject">Subject</label>
+    <select id="planSubject" class="field">
+      {% for s in subjects %}<option>{{ s }}</option>{% endfor %}
+    </select>
+    <label for="planDate">Date <span class="tiny">(optional)</span></label>
+    <input id="planDate" class="field" type="date">
+    <button class="btn primary" type="submit">Add task</button>
+    <p class="tiny" id="planMessage" aria-live="polite"></p>
+  </form>
+
+  <section class="card reveal">
+    <h3>My study plan</h3>
+    <div id="planList" class="tasklist"></div>
+  </section>
+</div>
+
+<p class="note reveal">Tip: split a big chapter into a notes session, a question-practice session and a short recall session.</p>
+<script id="plans-data" type="application/json">{{ plans|tojson }}</script>
+{% endblock %}
