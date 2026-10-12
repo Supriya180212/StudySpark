@@ -160,7 +160,10 @@ def _auth_error(exc, action="log in"):
     if any(w in text for w in ("connect", "name or service", "getaddrinfo", "timed out", "resolve")):
         return "Couldn't reach Supabase. Check SUPABASE_URL in your .env file and your internet connection."
     if "missing environment variable" in text:
-        return "The server is missing its Supabase settings. Add SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_KEY in your hosting environment variables (or .env file) and restart."
+        name = str(exc).split(":")[-1].strip()
+        return (f"The server can't see the setting {name}. Add it under Environment on your host "
+                "(or in your .env file), save, and redeploy. Accepted names: SUPABASE_URL; "
+                "SUPABASE_ANON_KEY or SUPABASE_PUBLISHABLE_KEY; SUPABASE_SERVICE_KEY or SUPABASE_SECRET_KEY.")
     if not os.environ.get("RENDER"):  # local dev only: show the raw error to help debugging
         return f"Couldn't {action}. Details: {type(exc).__name__}: {exc}"
     return f"Couldn't {action}. Please try again."
